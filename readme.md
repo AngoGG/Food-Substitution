@@ -54,12 +54,11 @@ Exemple à analyser :
 - https://world.openfoodfacts.org/product/5449000000996/coca-cola
 
 | Information     |     Champ API    |
-| ------------- |: -------------: |
+- |:-
 | Aliment ID   |        _id        |
 | Aliment     |        product_name        |
-| Description    |                |
+| Description    |         test       |
 | Magasin ou acheter    |        stores_tags        |
 | Lien OpenFoodFact    |        url        |
 | nutriscore    |        nutriscore_grade        |
 | Catégorie    |        categories        |
- 
