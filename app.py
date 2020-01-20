@@ -7,6 +7,8 @@
 @note    0.0.1 (2020-01-16) : Init file
 '''
 
+import requests
+from os import environ
 from openfoodfact.api import Api
 
 class App:

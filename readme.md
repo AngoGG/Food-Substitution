@@ -54,7 +54,7 @@ Exemple à analyser :
 - https://world.openfoodfacts.org/product/5449000000996/coca-cola
 
 | Information     |     Champ API    |
-- |:-
+| - |:-
 | Aliment ID   |        _id        |
 | Aliment     |        product_name        |
 | Description    |         test       |
