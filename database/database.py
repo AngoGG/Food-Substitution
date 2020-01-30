@@ -29,13 +29,20 @@ class Database:
             charset=self.charset
         )
 
-    def execute(self, query):
+    def query(self, query):
         '''Open Cursor, Execute the Query and return result.'''
         cursor = self.connection.cursor()
         cursor.execute(query)
         result = cursor.fetchall()
         cursor.close()
         return result
+
+    def insert(self, query):
+        '''Open Cursor, Execute the Insert and commit changes to the database.'''
+        cursor = self.connection.cursor()
+        cursor.execute(query)
+        self.connection.commit()
+        cursor.close()
 
     def disconnect(self):
         '''Close the database connection.'''

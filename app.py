@@ -18,12 +18,13 @@ class App:
 
     def __init__(self) -> None:
         self.api: Api = Api()
-        self.database : Database() = Database(environ['HOST'], environ['USER'], environ['PASSWORD'])
+        self.database : Database() = Database(environ['HOST'], environ['USER'], environ['PASSWORD'], "openfoodfacts")
 
     def main(self) -> None:   
         self.api.get_products()
         self.database.connect()
-        print(self.database.execute("SHOW DATABASES ;"))
+        #self.database.insert("INSERT INTO openfoodfacts.product VALUES ('3502110009449', 'Pur jus dorange sans pulpe', 'https://world.openfoodfacts.org/product/3502110009449/pur-jus-d-orange-sans-pulpe-tropicana', 'D');")
+        #print(self.database.query("SELECT * FROM openfoodfacts.product;"))
         self.database.disconnect()
 
 def main() -> None:
