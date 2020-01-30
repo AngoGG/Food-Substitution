@@ -44,7 +44,7 @@ class Api:
         data = []
         for product in result['products']:
             if ('nutriscore_grade' in product):
-                data.append({"id" : product['_id'], "Aliment" : product['product_name'], "Magasins" : product['stores_tags'], "Catégories" : product['categories'], "Nutriscore" : product['nutriscore_grade']}) 
+                data.append({"id" : product['_id'], "Aliment" : product['product_name'], "Magasins" : product['stores_tags'], "Catégories" : product['categories'], "Nutriscore" : product['nutriscore_grade'], "Url" : product['url']}) 
         self.save_data_as_json_file(data, 'products.json')
     
     def save_data_as_json_file(self, data, file) -> None:
