@@ -13,23 +13,32 @@ from openfoodfacts.api import Api
 from database.database import Database
 from typing import BinaryIO
 
+
 class App:
     ''' Main Class '''
 
     def __init__(self) -> None:
         self.api: Api = Api()
-        self.database : Database() = Database(environ['HOST'], environ['USER'], environ['PASSWORD'], "openfoodfacts")
+        self.database: Database() = Database(
+            environ['HOST'],
+            environ['USER'],
+            environ['PASSWORD'],
+            environ['DATABASE'],
+        )
 
-    def main(self) -> None:   
-        self.api.get_products()
+    def main(self) -> None:
+        products = self.api.get_products()
         self.database.connect()
-        #self.database.insert("INSERT INTO openfoodfacts.product VALUES ('3502110009449', 'Pur jus dorange sans pulpe', 'https://world.openfoodfacts.org/product/3502110009449/pur-jus-d-orange-sans-pulpe-tropicana', 'D');")
-        #print(self.database.query("SELECT * FROM openfoodfacts.product;"))
+        self.database.create_tables()
+        self.database.populate_from_json(products)
+        # print(self.database.query("SELECT * FROM openfoodfacts.product;"))
         self.database.disconnect()
+
 
 def main() -> None:
     app: App = App()
     app.main()
+
 
 if __name__ == '__main__':
     main()
