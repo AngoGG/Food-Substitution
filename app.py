@@ -12,6 +12,7 @@ from os import environ
 from openfoodfacts.api import Api
 from database.database import Database
 from typing import BinaryIO
+from config.config import Config
 
 
 class App:
@@ -27,11 +28,16 @@ class App:
         )
 
     def main(self) -> None:
-        products = self.api.get_products()
-        self.database.connect()
-        self.database.create_tables()
-        self.database.populate_from_json(products)
-        self.database.disconnect()
+        for category in Config.CATEGORIES:
+            products = self.api.get_products(category)
+            self.database.connect()
+            if Config.TABLES_CREATED == False:
+                self.database.delete_tables()
+                self.database.create_tables()
+                Config.TABLES_CREATED = True
+            self.database.populate_from_json(products)
+            self.database.disconnect()
+                
 
 
 def main() -> None:
