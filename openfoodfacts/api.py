@@ -22,11 +22,11 @@ class Api:
             "action": "process",
             "tagtype_0": "categories",
             "tag_contains_0": "contains",
-            "tag_0": "Boisson",
+            "tag_0": 'Chips',
             "sort_by": "unique_scans_n",
             "countries": "France",
             "page": 1,
-            "page_size": 10,
+            "page_size": 1000,
             "json": 1,
         }
         self.product_items_list: List[str, str] = [
@@ -44,9 +44,9 @@ class Api:
         response = requests.get(self.base_url, params=self.payloads)
         return response.json()
 
-    def get_products(self) -> List[Dict[str, Any]]:
+    def get_products(self, category) -> List[Dict[str, Any]]:
         """ Sorts the data to keep only what is needed in the database """
-
+        self.payloads['tag_0'] = category
         result = self.request()
 
         data = []
@@ -77,6 +77,8 @@ class Api:
         for field in self.product_items_list:
             if field not in product:
                 return False
+            elif len(product[field]) == 0:
+                return False          
         if not product['stores_tags']:
             return False
         return True
