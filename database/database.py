@@ -11,6 +11,7 @@ import mysql.connector
 from os import environ
 from mysql.connector import errorcode
 from database.config import Config
+from typing import List
 
 
 class Database:
@@ -41,12 +42,17 @@ class Database:
         cursor.close()
         return result
 
-    def insert(self, query):
+    def insert(self, query, lastrowid = False):
         '''Open Cursor, Execute the Insert and commit changes to the database.'''
         cursor = self.connection.cursor()
         cursor.execute(query)
         self.connection.commit()
-        cursor.close()
+        if lastrowid:
+            store_id = cursor.lastrowid
+            cursor.close()
+            return store_id
+        else:
+            cursor.close()
 
     def disconnect(self):
         '''Close the database connection.'''
@@ -78,7 +84,20 @@ class Database:
             self.insert(
                 f"INSERT INTO product VALUES ({product['id']}, \"{product['Aliment']}\", \"{product['Url']}\", \"{product['Nutriscore']}\");"
             )
-            self.populate_caterogies(product['Categories'])
+            store_id = self.populate_stores(product['Magasins'])
+            self.insert(
+                f"INSERT INTO store_has_product VALUES ({store_id}, \"{product['id']}\");"
+            )
+            category_id = self.populate_caterogies(product['Categories'])
+            self.insert(
+                f"INSERT INTO category_has_product VALUES ({category_id}, \"{product['id']}\");"
+            )
+
+    def populate_stores(self, stores):
+        for store in stores:
+            store_id= self.insert(f"INSERT INTO store (store_name)  VALUES (\"{store}\");", lastrowid=True)
+            return store_id
+
 
     def populate_caterogies(self, categories):
         for category in categories.split(", "):
@@ -86,10 +105,5 @@ class Database:
                 if "en:" not in category:
                     self.category_list.append(category)
                     print(self.category_list)
-                    self.insert(
-                        f"INSERT INTO category (category_name)  VALUES (\"{category}\");"
-                    )
-
-    def populate_stores(self):
-        pass
-
+                    category_id = self.insert(f"INSERT INTO category (category_name)  VALUES (\"{category}\");", lastrowid=True)
+                    return category_id

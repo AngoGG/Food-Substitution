@@ -31,7 +31,6 @@ class App:
         self.database.connect()
         self.database.create_tables()
         self.database.populate_from_json(products)
-        # print(self.database.query("SELECT * FROM openfoodfacts.product;"))
         self.database.disconnect()
 
 

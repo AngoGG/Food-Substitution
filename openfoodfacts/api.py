@@ -26,10 +26,10 @@ class Api:
             "sort_by": "unique_scans_n",
             "countries": "France",
             "page": 1,
-            "page_size": 1000,
+            "page_size": 10,
             "json": 1,
         }
-        self.product_items_list = [
+        self.product_items_list: List[str, str] = [
             'nutriscore_grade',
             'product_name',
             'stores_tags',
@@ -73,8 +73,10 @@ class Api:
             json.dump(data, outfile)
 
     def _product_is_valid(self, product: Dict[str, Any]) -> bool:
-        ''' Verifies the presence of all the elements required for a product '''
+        ''' Verifies the presence of all the elements required for a product and if the stores_tags list is not empty '''
         for field in self.product_items_list:
             if field not in product:
                 return False
+        if not product['stores_tags']:
+            return False
         return True
