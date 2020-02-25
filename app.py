@@ -8,11 +8,14 @@
 '''
 
 import requests
+import time
+import os
 from os import environ
 from openfoodfacts.api import Api
 from database.database import Database
 from typing import BinaryIO
 from config.config import Config
+from ui.ui import Ui
 
 
 class App:
@@ -26,18 +29,25 @@ class App:
             environ['PASSWORD'],
             environ['DATABASE'],
         )
+        self.ui: Ui = Ui()
 
     def main(self) -> None:
+        start: float = time.time()
         for category in Config.CATEGORIES:
-            products = self.api.get_products(category)
             self.database.connect()
-            if Config.TABLES_CREATED == False:
+            if Config.TABLES_CREATION:
                 self.database.delete_tables()
                 self.database.create_tables()
-                Config.TABLES_CREATED = True
-            self.database.populate_from_json(products)
+                Config.TABLES_CREATION = False
+            for product in self.api.get_products(category):
+                self.database.populate_from_json(product)
             self.database.disconnect()
-                
+        end: float = time.time()
+        # print(f'Temps de traitement {end - start:.2f} sec.')
+        os.system('clear')
+        program_loop = True
+        while program_loop:
+            self.ui.display_menu()
 
 
 def main() -> None:

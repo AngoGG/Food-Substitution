@@ -10,11 +10,17 @@
 
 class Config:
 
-    #CATEGORIES = ['Boissons gazeuses']
-    CATEGORIES = ['Boissons gazeuses', 'Pizzas', 'Snacks salés', 'Végétarien', 'Gâteaux']
+    TABLES_CREATION = False
 
-    TABLES_CREATED = False
-    
+    # CATEGORIES = ['Boissons gazeuses']
+    CATEGORIES = [
+        'Boissons gazeuses',
+        'Pizzas',
+        'Snacks salés',
+        'Végétarien',
+        'Gâteaux',
+    ]
+
     TABLES = {}
 
     TABLES['product'] = (

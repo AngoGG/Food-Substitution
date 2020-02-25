@@ -10,7 +10,7 @@ import json
 import requests
 from os import environ
 from pathlib import Path
-from typing import List, Dict, Any, BinaryIO
+from typing import List, Dict, Any, BinaryIO, Generator
 
 
 class Api:
@@ -25,8 +25,9 @@ class Api:
             "tag_0": 'Chips',
             "sort_by": "unique_scans_n",
             "countries": "France",
+            "purchase_places": "France",
             "page": 1,
-            "page_size": 1000,
+            "page_size": 10,
             "json": 1,
         }
         self.product_items_list: List[str, str] = [
@@ -44,26 +45,21 @@ class Api:
         response = requests.get(self.base_url, params=self.payloads)
         return response.json()
 
-    def get_products(self, category) -> List[Dict[str, Any]]:
+    def get_products(self, category) -> Generator:
         """ Sorts the data to keep only what is needed in the database """
         self.payloads['tag_0'] = category
         result = self.request()
-
-        data = []
         for product in result['products']:
             if self._product_is_valid(product):
-                data.append(
-                    {
-                        "id": product['_id'],
-                        "Aliment": product['product_name'],
-                        "Magasins": product['stores_tags'],
-                        "Categories": product['categories'],
-                        "Nutriscore": product['nutriscore_grade'].upper(),
-                        "Url": product['url'],
-                    }
-                )
-        self.save_data_as_json_file(data, 'products.json')
-        return data
+                data: Dict = {
+                    "id": product['_id'],
+                    "Aliment": product['product_name'],
+                    "Magasins": product['stores_tags'],
+                    "Categories": product['categories'],
+                    "Nutriscore": product['nutriscore_grade'].upper(),
+                    "Url": product['url'],
+                }
+                yield data
 
     def save_data_as_json_file(
         self, data: List[Dict[str, Any]], file: str
@@ -78,7 +74,7 @@ class Api:
             if field not in product:
                 return False
             elif len(product[field]) == 0:
-                return False          
+                return False
         if not product['stores_tags']:
             return False
         return True
