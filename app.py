@@ -8,7 +8,6 @@
 '''
 
 import time
-import os
 from os import environ
 from openfoodfacts.api import Api
 from openfoodfacts.datas_cleaner import DatasCleaner
