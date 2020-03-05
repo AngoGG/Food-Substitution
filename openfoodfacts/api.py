@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 '''
 @desc    description
-@author  SDQ <sdq@afnor.org>
+@author  ANGO <ango@afnor.org>
 @version 0.0.1
 @date    2020-01-20
 @note    0.0.1 (2020-01-20) : Init file
@@ -27,39 +27,20 @@ class Api:
             "countries": "France",
             "purchase_places": "France",
             "page": 1,
-            "page_size": 10,
+            "page_size": 20,
             "json": 1,
         }
-        self.product_items_list: List[str, str] = [
-            'nutriscore_grade',
-            'product_name',
-            'stores_tags',
-            '_id',
-            'categories',
-            'url',
-        ]
         self.json_dir: str = environ.get("JSON_DIR")
 
     def request(self) -> dict:
         """ Get data from API, return json with results """
         response = requests.get(self.base_url, params=self.payloads)
         return response.json()
-
-    def get_products(self, category) -> Generator:
-        """ Sorts the data to keep only what is needed in the database """
+    
+    def get_datas(self, category):
         self.payloads['tag_0'] = category
         result = self.request()
-        for product in result['products']:
-            if self._product_is_valid(product):
-                data: Dict = {
-                    "id": product['_id'],
-                    "Aliment": product['product_name'],
-                    "Magasins": product['stores_tags'],
-                    "Categories": product['categories'],
-                    "Nutriscore": product['nutriscore_grade'].upper(),
-                    "Url": product['url'],
-                }
-                yield data
+        return result
 
     def save_data_as_json_file(
         self, data: List[Dict[str, Any]], file: str
@@ -67,14 +48,3 @@ class Api:
         """ All in method title"""
         with open(f'{self.json_dir}/{file}', 'w') as outfile:
             json.dump(data, outfile)
-
-    def _product_is_valid(self, product: Dict[str, Any]) -> bool:
-        ''' Verifies the presence of all the elements required for a product and if the stores_tags list is not empty '''
-        for field in self.product_items_list:
-            if field not in product:
-                return False
-            elif len(product[field]) == 0:
-                return False
-        if not product['stores_tags']:
-            return False
-        return True

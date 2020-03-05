@@ -7,9 +7,10 @@
 @note    0.0.1 (2020-02-25) : Init file
 '''
 from config.config import Config
+from database.database import Database
 
 
-class Ui:
+class Display:
     ''' Class who will manage the UI display and interactions '''
 
     def __init__(self):

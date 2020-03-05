@@ -7,15 +7,16 @@
 @note    0.0.1 (2020-01-16) : Init file
 '''
 
-import requests
 import time
-import os
 from os import environ
 from openfoodfacts.api import Api
+from openfoodfacts.datas_cleaner import DatasCleaner
 from database.database import Database
+from database.setup_database import SetupDatabase
+from database.populate import Populate
 from typing import BinaryIO
 from config.config import Config
-from ui.ui import Ui
+from ui.display import Display
 
 
 class App:
@@ -29,21 +30,24 @@ class App:
             environ['PASSWORD'],
             environ['DATABASE'],
         )
-        self.ui: Ui = Ui()
+        self.ui: Display = Display()
+        self.setup_database: SetupDatabase = SetupDatabase(self.database)
+        self.clean_datas: DatasCleaner = DatasCleaner()
 
     def main(self) -> None:
         start: float = time.time()
         for category in Config.CATEGORIES:
             self.database.connect()
             if Config.TABLES_CREATION:
-                self.database.delete_tables()
-                self.database.create_tables()
+                self.setup_database.delete_tables()
+                self.setup_database.create_tables()
                 Config.TABLES_CREATION = False
-            for product in self.api.get_products(category):
-                self.database.populate_from_json(product)
+            result = self.api.get_datas(category)
+            for product in self.clean_datas.get_product(result):
+                Populate(self.database, product)
             self.database.disconnect()
         end: float = time.time()
-        # print(f'Temps de traitement {end - start:.2f} sec.')
+        print(f'Temps de traitement {end - start:.2f} sec.')
         os.system('clear')
         program_loop = True
         while program_loop:

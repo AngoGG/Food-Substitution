@@ -10,11 +10,11 @@
 
 class Config:
 
-    TABLES_CREATION = False
+    TABLES_CREATION = True
 
     # CATEGORIES = ['Boissons gazeuses']
     CATEGORIES = [
-        'Boissons gazeuses',
+        'Boissons',
         'Pizzas',
         'Snacks salés',
         'Végétarien',
