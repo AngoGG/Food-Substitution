@@ -13,17 +13,17 @@ from database.database import Database
 class Display:
     ''' Class who will manage the UI display and interactions '''
 
-    def __init__(self):
-        pass
+    def __init__(self, database):
+        self.database = database
 
     def display_menu(self):
         ''' '''
         print(
-            'Bonjour utilisateur, bienvenue dans notre programme de substitution alimentaire Pur Beurre!',
+            'Bonjour utilisateur, bienvenue dans notre programme de substitution alimentaire Pur Beurre!\n',
         )
         print(
-            'Que voulez-vous faire? ',
-            'Appuyez sur la touche de votre clavier correspondante à votre choix\n',
+            'Que voulez-vous faire? \n',
+            'Appuyez sur la touche de votre clavier correspondante à votre choix:\n',
             '1 - Remplacer un aliment par un substitut plus sain\n',
             '2 - Voir vos aliment déjà subsitués\n',
         )
@@ -50,13 +50,32 @@ class Display:
 
     def display_products(self, category):
         ''' '''
-        # Query sur category = category et product nutriscore_grade = E ou D pour pouvoir trouver facilement un resultat
-        # Afficher ici les 5 premiers résultats
-        # Dans class Database, faire une methode get_products dans laquelle on enverra la catégorie récupérée
         print(
-            f'\nVoici la liste des Aliments a substitue pour le choix {category}',
+            f'\nVoici la liste des Aliments a substitue pour le choix {category}\n',
+        )
+        n = 1
+        products = self.database.get_product(category)
+        for product in products:
+            print (f'{n} - {product[1]}, Nutriscore = {product[2]}')
+            n += 1
+        choix = input("Sélectionner un aliment à substituer: ")
+        if int(choix) <= n:
+            self.display_substitute(products[int(choix)-1][0], products[int(choix)-1][1], category)
+        else:
+            print(f'Ayayaye : {choix} => {n}')
+
+    def display_substitute(self, product_id, product_name, category):
+        ''' '''
+        substitute = self.database.get_substitute(category)
+        print(
+            f'\nPour le produit {product_name}, nous vous proposons le produit suivant en substitution:\n',
         )
         print(
-            ' 1- Aliment 1 \n', '2- Aliment 2\n', '3- Aliment 3\n',
+            f'Nom du produit : {substitute[0][1]} \n' +
+            f'Nutri-Score : {substitute[0][3]}\n' +   
+            f'Magasins: {". ".join(substitute[1])}\n' +
+            f'Lien vers la page OpenFoodFacts du produit : {str(substitute[0][2])}\n'
         )
         input("")
+
+
