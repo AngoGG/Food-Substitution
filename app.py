@@ -8,6 +8,7 @@
 '''
 
 import time
+import os
 from os import environ
 from openfoodfacts.api import Api
 from openfoodfacts.datas_cleaner import DatasCleaner
@@ -30,10 +31,10 @@ class App:
             environ['PASSWORD'],
             environ['DATABASE'],
         )
-        self.ui: Display = Display()
         self.setup_database: SetupDatabase = SetupDatabase(self.database)
         self.clean_datas: DatasCleaner = DatasCleaner()
         self.populate: Populate = Populate(self.database)
+        self.ui: Display = Display(self.database)
 
     def main(self) -> None:
         start: float = time.time()
@@ -45,14 +46,14 @@ class App:
                 Config.TABLES_CREATION = False
             result = self.api.get_datas(category)
             for product in self.clean_datas.get_product(result):
-                self.populate.insert_datas(product)
-            self.database.disconnect()
+                self.populate.insert_datas(product)      
         end: float = time.time()
         print(f'Temps de traitement {end - start:.2f} sec.')
         os.system('clear')
         program_loop = True
         while program_loop:
             self.ui.display_menu()
+        self.database.disconnect()
 
 
 def main() -> None:
