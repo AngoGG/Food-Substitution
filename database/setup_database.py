@@ -9,7 +9,7 @@
 
 import mysql.connector
 from mysql.connector import errorcode
-from config.config import Config
+from .config import Config
 
 
 class SetupDatabase:
