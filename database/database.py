@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+# #!/usr/bin/env python3
 '''
 @desc    description
 @author  ANGO <ango@afnor.org>
@@ -10,10 +10,7 @@
 import random
 import time
 import mysql.connector
-from os import environ
-from config.config import Config
 from typing import List
-
 
 class Database:
 
@@ -57,22 +54,21 @@ class Database:
 
     def get_product(self, category):
         ''' get all products from the selected category and return the first 10 rows '''
-        request = "SELECT p.id, p.product_name, p.nutriscore_grade, c.category_name" + \
+        request = "SELECT p.id, p.product_name, p.url, p.nutriscore_grade, c.category_name" + \
                     " FROM product p" + \
                     " LEFT JOIN category_has_product chp ON p.id = chp.product_id" + \
                     " LEFT JOIN category c ON chp.category_id = c.id" + \
                     f" WHERE c.category_name = '{category}'" + \
                     " AND nutriscore_grade > 'C' " + \
-                    "LIMIT 10"
+                    " ORDER BY RAND() " + \
+                    " LIMIT 10"
         return self.query(request)
 
     def get_substitute(self, category):
         ''' For a given product, get all products with the same category and return one  '''
 
         substitute = self.select_substitute(category)
-        substitute_infos = self.get_substitute_infos(substitute)
-        substitute_infos.append(self.get_substitute_stores(substitute))
-        return substitute_infos
+        return self.get_substitute_infos(substitute[0][0])
     
     def select_substitute(self, category):
         ''' '''
@@ -84,25 +80,48 @@ class Database:
                             " FROM product p" + \
                             " INNER JOIN category_has_product chp ON p.id = chp.product_id" + \
                             f" WHERE chp.category_id = '{category_id[0][0]}'" + \
-                            " AND p.nutriscore_grade <= 'C' "
-        products_in_category = self.query(category_products_id_request)
-        return random.choice(products_in_category)
+                            " AND p.nutriscore_grade <= 'C' " + \
+                            " ORDER BY RAND() " + \
+                            " LIMIT 1"
+
+        return self.query(category_products_id_request)
 
     def get_substitute_infos(self, substitute_id):
         ''' '''
-        substitute_info_request = f"SELECT * FROM product WHERE id = '{substitute_id[0]}'" 
-        return self.query(substitute_info_request)
+        substitute_info_request = f"SELECT * FROM product WHERE id = '{substitute_id}'"
+        return self.query(substitute_info_request)[0]
 
-    def get_substitute_stores(self, substitute_id):
+    def get_stores(self, product_id):
         ''' '''
-        substitute_stores_request = "SELECT s.store_name" + \
+        product_stores_request = "SELECT s.store_name" + \
                                     " FROM store s" + \
                                     " INNER JOIN store_has_product shp ON s.id = shp.store_id" + \
-                                    f" WHERE shp.product_id = '{substitute_id[0]}'"
+                                    f" WHERE shp.product_id = '{product_id}'"
         stores_list= []
-        for store in self.query(substitute_stores_request):
+        for store in self.query(product_stores_request):
             stores_list.append(store[0])
         return stores_list
+    
+    def get_categories(self, product_id):
+        ''' '''
+        product_categories_request = "SELECT c.category_name" + \
+                                    " FROM category c" + \
+                                    " INNER JOIN category_has_product chp ON c.id = chp.category_id" + \
+                                    f" WHERE chp.product_id = '{product_id}'"
+        categories_list= []
+        for store in self.query(product_categories_request):
+            categories_list.append(store[0])
+        return categories_list
+    
+    def add_favorite(self, product_id, substitute_id):
+        ''' '''
+        add_favorite_request = f"INSERT INTO substituted_product VALUES ('{substitute_id}', '{product_id}')"
+        self.insert(add_favorite_request)
+    
+    def get_favorites(self):
+        ''' '''
+        return self.query("SELECT * FROM substituted_product")
+
 
     def disconnect(self):
         '''Close the database connection.'''
