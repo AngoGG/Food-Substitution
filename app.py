@@ -1,4 +1,5 @@
-#!/usr/bin/env python3
+# coding: utf8
+# #!/usr/bin/env python3
 '''
 @desc    description
 @author  ANGO <ango@afnor.org>
@@ -49,7 +50,7 @@ class App:
                 self.populate.insert_datas(product)      
         end: float = time.time()
         print(f'Temps de traitement {end - start:.2f} sec.')
-        os.system('clear')
+        os.system('cls')
         program_loop = True
         while program_loop:
             self.ui.display_menu()
