@@ -126,9 +126,14 @@ class Display:
     def display_favorites(self):
         ''' '''
         favorites = self.database.get_favorites()
-        print('Voici vos substitutions enregistrées dans vos favoris:\n')
+        print('Voici vos substitutions enregistrées dans vos favoris: Aliment[Nutriscore] => Substitut[Nutriscore]\n')
+        n = 1
         for favorite in favorites:
-            print(f'{favorite[0]} => {favorite[1]}')
+            product_infos = self.database.get_product_infos(favorite[0])
+            substitute_infos = self.database.get_product_infos(favorite[1])
+            print(f'{n} - {product_infos[1]}[Nutriscore {product_infos[3]}] =>',
+             f'{substitute_infos[1]}[Nutriscore {substitute_infos[3]}]')
+            n += 1
         print(
             '\nTapez une touche pour revenir au menu\n',
         )

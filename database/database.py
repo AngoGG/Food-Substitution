@@ -68,7 +68,7 @@ class Database:
         ''' For a given product, get all products with the same category and return one  '''
 
         substitute = self.select_substitute(category)
-        return self.get_substitute_infos(substitute[0][0])
+        return self.get_product_infos(substitute[0][0])
     
     def select_substitute(self, category):
         ''' '''
@@ -86,10 +86,10 @@ class Database:
 
         return self.query(category_products_id_request)
 
-    def get_substitute_infos(self, substitute_id):
+    def get_product_infos(self, product_id):
         ''' '''
-        substitute_info_request = f"SELECT * FROM product WHERE id = '{substitute_id}'"
-        return self.query(substitute_info_request)[0]
+        product_info_request = f"SELECT * FROM product WHERE id = '{product_id}'"
+        return self.query(product_info_request)[0]
 
     def get_stores(self, product_id):
         ''' '''
