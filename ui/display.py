@@ -30,9 +30,9 @@ class Display:
         )
         choix = input("Tapez votre choix: ")
         if choix != "":
-            if int(choix) == 1:
+            if choix == "1":
                 self.display_categories()
-            elif int(choix) == 2:
+            elif choix == "2":
                 self.display_favorites()
             else:
                 print("Le choix n'existe pas\n")
@@ -47,16 +47,21 @@ class Display:
             print(f'{n} - {category}')
             n += 1
         choix = input('Selectionnez une categorie à afficher: ')
-        if int(choix) <= len(Config.CATEGORIES):
-            self.display_products(Config.CATEGORIES[int(choix) - 1])
-        else:
+        try:
+            int(choix)
+            if int(choix) <= len(Config.CATEGORIES) and int(choix) != 0:
+                self.display_products(Config.CATEGORIES[int(choix) - 1])
+            else:
+                print("Le choix n'existe pas\n")
+                self.display_categories()
+        except ValueError:
             print("Le choix n'existe pas\n")
             self.display_categories()
 
     def display_products(self, category):
         ''' '''
         print(
-            f'\nVoici la liste des Aliments a substitue pour le choix {category}:',
+            f'\nVoici la liste des Aliments a substituer pour le choix {category}:',
         )
         n = 1
         products = self.database.get_product(category)
@@ -64,11 +69,15 @@ class Display:
             print (f'{n} - {product[1]}, Nutriscore = {product[3]}')
             n += 1
         choix = input("Sélectionner un aliment à substituer: ")
-        if int(choix) <= n:
-            self.display_product_infos(products[int(choix)-1], category)
-            
-        else:
-            print(f'Ayayaye : {choix} => {n}')
+        try:
+            if int(choix) <= len(products) and int(choix) != 0:
+                self.display_product_infos(products[int(choix)-1], category)
+            else:
+                print("Le choix n'existe pas\n")
+                self.display_products(category)
+        except ValueError:
+            print("Le choix n'existe pas\n")
+            self.display_categories()
 
     def display_product_infos(self, product, category):
         product_stores = self.database.get_stores(str(product[0]))
@@ -77,7 +86,7 @@ class Display:
             f'\nVous avez sélectionné {product[1]}, voici les informations sur ce produit:',
         )
         print(
-            f'Nutri-Score : {product[3]}\n' +
+            f'Nutri-Score : {product[3]}\n' + 
             f'Catégories: {", ".join(product_categories)}\n' +    
             f'Magasins: {", ".join(product_stores)}\n' +
             f'Lien vers la page OpenFoodFacts du produit : {str(product[2])}\n'
@@ -87,9 +96,9 @@ class Display:
             '\nTapez 2 pour revenir à la sélection des catégories\n',
         )
         choix = input("")
-        if choix == '1':
+        if choix == "1":
             self.display_substitute(product[0], product[1], category)
-        elif choix == '2':
+        elif choix == "2":
             self.display_categories()
         else:
             print("Le choix n'existe pas\n")
@@ -114,7 +123,7 @@ class Display:
             '\nTapez 2 pour revenir au menu\n',
         )
         choix = input("")
-        if choix == '1':
+        if choix == "1":
             self.database.add_favorite(substitute[0], product_id)
             print('Substitution enregistrée dans les favoris, retour au menu \n')
             self.display_menu()
