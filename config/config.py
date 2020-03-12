@@ -10,8 +10,6 @@
 
 class Config:
 
-    TABLES_CREATION = False
-
     CATEGORIES = [
         'Sodas',
         'Pizzas',
