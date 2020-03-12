@@ -27,7 +27,7 @@ class Api:
             "countries": "France",
             "purchase_places": "France",
             "page": 1,
-            "page_size": 20,
+            "page_size": 300,
             "json": 1,
         }
         self.json_dir: str = environ.get("JSON_DIR")
