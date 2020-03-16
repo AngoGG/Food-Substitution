@@ -1,4 +1,4 @@
-# coding: utf8
+# coding: utf8            <= SDQ : inutile, python 2, à bannir
 # #!/usr/bin/env python3
 '''
 @desc    description
@@ -9,6 +9,10 @@
 '''
 from config.config import Config
 from database.database import Database
+
+
+# J'aurais retirer le texte du code, un peu comme le HTML :
+# séparer le fond de la forme
 
 
 class Display:
@@ -47,10 +51,16 @@ class Display:
             print(f'{n} - {category}')
             n += 1
         choix = input('Selectionnez une categorie à afficher: ')
+        # SDQ: ici, je pense qu'il y a une grosse erreur dans ta façon de
+        # procéder. Imagine : 1. je crée une base avec les catégos bonbon
+        # et pizza. 2. je réinitialise ta classe Config. Dans ce cas de figure,
+        # tu afficheras les catégories du fichier de config, qui ne sont pas
+        # les mêmes que celles en base => tout le processus derrière sera
+        # buggé. Il faut que tu affiches la liste des catégories en base.
         try:
-            int(choix)
-            if int(choix) <= len(Config.CATEGORIES) and int(choix) != 0:
-                self.display_products(Config.CATEGORIES[int(choix) - 1])
+            choix = int(choix)
+            if 0 < choix <= len(Config.CATEGORIES):
+                self.display_products(Config.CATEGORIES[choix - 1])
             else:
                 print("Le choix n'existe pas\n")
                 self.display_categories()
@@ -66,12 +76,17 @@ class Display:
         n = 1
         products = self.database.get_product(category)
         for product in products:
-            print (f'{n} - {product[1]}, Nutriscore = {product[3]}')
+            # Si tu as 1500 produits, ça va faire long non ?
+            # Pense à externaliser la limite, genre
+            # self.database.get_product(category, limit=10)
+            # plutôt que de le mettre en dur de l'autre côté. Dans ton cas,
+            # on s'attend à tout récupérer, pas juste les 10 premiers
+            print(f'{n} - {product[1]}, Nutriscore = {product[3]}')
             n += 1
         choix = input("Sélectionner un aliment à substituer: ")
         try:
             if int(choix) <= len(products) and int(choix) != 0:
-                self.display_product_infos(products[int(choix)-1], category)
+                self.display_product_infos(products[int(choix) - 1], category)
             else:
                 print("Le choix n'existe pas\n")
                 self.display_products(category)
@@ -86,10 +101,10 @@ class Display:
             f'\nVous avez sélectionné {product[1]}, voici les informations sur ce produit:',
         )
         print(
-            f'Nutri-Score : {product[3]}\n' + 
-            f'Catégories: {", ".join(product_categories)}\n' +    
-            f'Magasins: {", ".join(product_stores)}\n' +
-            f'Lien vers la page OpenFoodFacts du produit : {str(product[2])}\n'
+            f'Nutri-Score : {product[3]}\n'
+            + f'Catégories: {", ".join(product_categories)}\n'
+            + f'Magasins: {", ".join(product_stores)}\n'
+            + f'Lien vers la page OpenFoodFacts du produit : {str(product[2])}\n'
         )
         print(
             'Tapez 1 pour remplacer cet aliment par un substitut plus sain',
@@ -107,16 +122,18 @@ class Display:
         ''' '''
         substitute = self.database.get_substitute(category)
         substitute_stores = self.database.get_stores(str(substitute[0]))
-        substitute_categories = self.database.get_categories(str(substitute[0]))
+        substitute_categories = self.database.get_categories(
+            str(substitute[0])
+        )
         print(
             f'\nPour le produit {product_name}, nous vous proposons le produit suivant en substitution:\n',
         )
         print(
-            f'Nom du produit : {substitute[1]} \n' +
-            f'Nutri-Score : {substitute[3]}\n' +
-            f'Catégories: {", ".join(substitute_categories)}\n' +   
-            f'Magasins: {", ".join(substitute_stores)}\n' +
-            f'Lien vers la page OpenFoodFacts du produit : {str(substitute[2])}\n'
+            f'Nom du produit : {substitute[1]} \n'
+            + f'Nutri-Score : {substitute[3]}\n'
+            + f'Catégories: {", ".join(substitute_categories)}\n'
+            + f'Magasins: {", ".join(substitute_stores)}\n'
+            + f'Lien vers la page OpenFoodFacts du produit : {str(substitute[2])}\n'
         )
         print(
             'Tapez 1 pour enregistrer ce substitut dans vos favoris',
@@ -125,7 +142,9 @@ class Display:
         choix = input("")
         if choix == "1":
             self.database.add_favorite(substitute[0], product_id)
-            print('Substitution enregistrée dans les favoris, retour au menu \n')
+            print(
+                'Substitution enregistrée dans les favoris, retour au menu \n'
+            )
             self.display_menu()
         elif choix == '2':
             self.display_categories()
@@ -135,19 +154,20 @@ class Display:
     def display_favorites(self):
         ''' '''
         favorites = self.database.get_favorites()
-        print('Voici vos substitutions enregistrées dans vos favoris: Aliment[Nutriscore] => Substitut[Nutriscore]\n')
+        print(
+            'Voici vos substitutions enregistrées dans vos favoris: Aliment[Nutriscore] => Substitut[Nutriscore]\n'
+        )
         n = 1
         for favorite in favorites:
             product_infos = self.database.get_product_infos(favorite[0])
             substitute_infos = self.database.get_product_infos(favorite[1])
-            print(f'{n} - {product_infos[1]}[Nutriscore {product_infos[3]}] =>',
-             f'{substitute_infos[1]}[Nutriscore {substitute_infos[3]}]')
+            print(
+                f'{n} - {product_infos[1]}[Nutriscore {product_infos[3]}] =>',
+                f'{substitute_infos[1]}[Nutriscore {substitute_infos[3]}]',
+            )
             n += 1
-        print(
-            '\nTapez une touche pour revenir au menu\n',
-        )
+        print('\nTapez une touche pour revenir au menu\n',)
         choix = input("")
         if choix:
             self.display_menu()
-
 

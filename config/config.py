@@ -8,7 +8,7 @@
 '''
 
 
-class Config:
+class Config:  # La config pourrait être rendue plus user friendly avec un YAML ou autre
 
     CATEGORIES = [
         'Sodas',

@@ -13,9 +13,11 @@ from .config import Config
 
 
 class SetupDatabase:
+
+    # manque docstrings et typages
+
     def __init__(self, database) -> None:
         self.database = database
-
 
     def create_tables(self):
         cursor = self.database.connection.cursor()
@@ -23,7 +25,9 @@ class SetupDatabase:
             table_description = Config.TABLES[table_name]
             try:
                 print(
-                    "Creating table {}: ".format(table_name),
+                    "Creating table {}: ".format(
+                        table_name
+                    ),  # pourquoi pas une fstring ?
                     end='',
                     flush=True,
                 )
