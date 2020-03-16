@@ -18,7 +18,7 @@ class Api:
 
     def __init__(self):
         self.base_url: str = "https://world.openfoodfacts.org/cgi/search.pl"
-        self.payloads: dict = {
+        self.payloads: dict = {  # mauvais typage, utiliser le Dict dans typing ; pas de s à payload
             "action": "process",
             "tagtype_0": "categories",
             "tag_contains_0": "contains",
@@ -36,7 +36,7 @@ class Api:
         """ Get data from API, return json with results """
         response = requests.get(self.base_url, params=self.payloads)
         return response.json()
-    
+
     def get_datas(self, category):
         self.payloads['tag_0'] = category
         result = self.request()
@@ -46,5 +46,7 @@ class Api:
         self, data: List[Dict[str, Any]], file: str
     ) -> None:
         """ All in method title"""
-        with open(f'{self.json_dir}/{file}', 'w') as outfile:
+        with open(
+            f'{self.json_dir}/{file}', 'w'
+        ) as outfile:  # Préférer pathlib
             json.dump(data, outfile)

@@ -9,20 +9,25 @@
 
 
 class Config:
+    # Et la docstring ?
 
     TABLES = {}
 
     TABLES['product'] = (
-        "CREATE TABLE `product` ("
-        "  `id` bigint NOT NULL,"
-        "  `product_name` varchar(255) NOT NULL,"
-        "  `url` varchar(255) NOT NULL,"
-        "  `nutriscore_grade` varchar(1) NOT NULL,"
-        "  PRIMARY KEY (`id`)"
-        ") ENGINE=InnoDB"
+        # pourquoi avoir fait ligne par ligne et pas avec """...""" ?
+        # SQL s'en fout des espaces
+        """CREATE TABLE `product` (
+          `id` bigint NOT NULL,
+          `product_name` varchar(255) NOT NULL,
+          `url` varchar(255) NOT NULL,
+          `nutriscore_grade` varchar(1) NOT NULL,
+          PRIMARY KEY (`id`)
+        ) ENGINE = InnoDB; """
+        # Engine InnoDB est le défaut désormais, pas la peine de le mettre
+        # Attention à la collation, par contre. Opter pour utf8mb4
     )
 
-    TABLES['category'] = (
+    TABLES['category'] = (  # idem
         "CREATE TABLE `category` ("
         "  `id` int NOT NULL AUTO_INCREMENT,"
         "  `category_name` varchar(400) NOT NULL,"
@@ -30,7 +35,7 @@ class Config:
         ") ENGINE=InnoDB"
     )
 
-    TABLES['store'] = (
+    TABLES['store'] = (  # idem
         "CREATE TABLE `store` ("
         "  `id` int NOT NULL AUTO_INCREMENT,"
         "  `store_name` varchar(255) NOT NULL,"
@@ -38,7 +43,7 @@ class Config:
         ") ENGINE=InnoDB"
     )
 
-    TABLES['substituted_product'] = (
+    TABLES['substituted_product'] = (  # idem
         "  CREATE TABLE `substituted_product` ("
         "  `substitution_product_id` bigint NOT NULL,"
         "  `product_id` BIGINT NOT NULL,"
@@ -55,11 +60,11 @@ class Config:
         "     ON DELETE NO ACTION"
         "     ON UPDATE NO ACTION,"
         "  CONSTRAINT PK_favorite"
-        "     PRIMARY KEY (`substitution_product_id`, `product_id`)" 
+        "     PRIMARY KEY (`substitution_product_id`, `product_id`)"
         ") ENGINE=InnoDB"
     )
 
-    TABLES['category_has_product'] = (
+    TABLES['category_has_product'] = (  # idem
         "  CREATE TABLE `category_has_product` ("
         "  `category_id` int NOT NULL,"
         "  `product_id` bigint NOT NULL,"
@@ -79,7 +84,7 @@ class Config:
         ") ENGINE=InnoDB"
     )
 
-    TABLES['store_has_product'] = (
+    TABLES['store_has_product'] = (  # idem
         "  CREATE TABLE `store_has_product` ("
         "  `store_id` int NOT NULL,"
         "  `product_id` bigint NOT NULL,"

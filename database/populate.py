@@ -9,15 +9,23 @@
 
 import mysql.connector
 
+
 class Populate:
-    
+
+    # manque docstrings et typages
+
     def __init__(self, database) -> None:
         self.database = database
         self.store_list = []
         self.category_list = []
 
-    def insert_datas(self, product):
+    def insert_datas(
+        self, product
+    ):  # product pourrait devenir une classe plutôt qu'un dict
         ''' '''
+        # AAAAAAAAHHH /o\ surtout pas, là c'est la mort : porte grande ouverte
+        # aux injections SQL. Et en plus tu complexifies le code à mort.
+        # https://dev.mysql.com/doc/connector-python/en/connector-python-tutorial-cursorbuffered.html
         product_name = product['Aliment'].replace('"', '""')
         if not self.database.query(
             f"SELECT * from product WHERE product_name = \"{product_name}\""
@@ -31,46 +39,46 @@ class Populate:
             for category_id in self.populate_categories(product['Categories']):
                 self._populate_category_has_product(category_id, product['id'])
 
-    def populate_stores(self, stores):     
+    def populate_stores(self, stores):
         for store in list(set(stores)):
             if store not in self.store_list:
                 self.store_list.append(store)
-                store_id = self.database.insert(
+                store_id = self.database.insert(  # pas mieux qu'au-dessus
                     f"INSERT INTO store (store_name)  VALUES (\"{store}\");",
                     lastrowid=True,
                 )
                 yield store_id
             else:
-                store_id = self.database.query(
+                store_id = self.database.query(  # idem
                     f"SELECT id from store WHERE store_name = \"{store}\";"
                 )
-                yield store_id[0][0]
+                yield store_id[0][0]  # indices à éviter
 
     def _populate_store_has_product(self, store_id, product_id):
-        self.database.insert(
+        self.database.insert(  # idem
             f"INSERT INTO store_has_product VALUES ({store_id}, \"{product_id}\");"
         )
 
-    def populate_categories(self, categories):     
+    def populate_categories(self, categories):
         categories.replace(", ", ",")
         for category in categories.split(","):
             new_category = category.lstrip()
             if new_category not in self.category_list:
                 if "en:" not in category:
                     self.category_list.append(new_category)
-                    category_id = self.database.insert(
+                    category_id = self.database.insert(  # idem
                         f"INSERT INTO category (category_name)  VALUES (\"{new_category}\");",
                         lastrowid=True,
                     )
                     yield category_id
             else:
-                category_id = self.database.query(
+                category_id = self.database.query(  # idem
                     f"SELECT id from category WHERE category_name = \"{new_category}\";"
                 )
-                yield category_id[0][0]
+                yield category_id[0][0]  # idem
 
     def _populate_category_has_product(self, category_id, product_id):
-        self.database.insert(
+        self.database.insert(  # idem
             f"INSERT INTO category_has_product VALUES ({category_id}, \"{product_id}\");"
         )
 
