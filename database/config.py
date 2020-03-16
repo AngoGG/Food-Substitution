@@ -1,18 +1,11 @@
 #!/usr/bin/env python3
-'''
-@desc    description
-@author  ANGO <ango@afnor.org>
-@version 0.0.1
-@date    2020-02-14
-@note    0.0.1 (2020-02-14) : Init file
-'''
 
 
 class Config:
 
     TABLES = {}
 
-    TABLES['product'] = (
+    TABLES["product"] = (
         "CREATE TABLE `product` ("
         "  `id` bigint NOT NULL,"
         "  `product_name` varchar(255) NOT NULL,"
@@ -22,7 +15,7 @@ class Config:
         ") ENGINE=InnoDB"
     )
 
-    TABLES['category'] = (
+    TABLES["category"] = (
         "CREATE TABLE `category` ("
         "  `id` int NOT NULL AUTO_INCREMENT,"
         "  `category_name` varchar(400) NOT NULL,"
@@ -30,7 +23,7 @@ class Config:
         ") ENGINE=InnoDB"
     )
 
-    TABLES['store'] = (
+    TABLES["store"] = (
         "CREATE TABLE `store` ("
         "  `id` int NOT NULL AUTO_INCREMENT,"
         "  `store_name` varchar(255) NOT NULL,"
@@ -38,7 +31,7 @@ class Config:
         ") ENGINE=InnoDB"
     )
 
-    TABLES['substituted_product'] = (
+    TABLES["substituted_product"] = (
         "  CREATE TABLE `substituted_product` ("
         "  `substitution_product_id` bigint NOT NULL,"
         "  `product_id` BIGINT NOT NULL,"
@@ -55,11 +48,11 @@ class Config:
         "     ON DELETE NO ACTION"
         "     ON UPDATE NO ACTION,"
         "  CONSTRAINT PK_favorite"
-        "     PRIMARY KEY (`substitution_product_id`, `product_id`)" 
+        "     PRIMARY KEY (`substitution_product_id`, `product_id`)"
         ") ENGINE=InnoDB"
     )
 
-    TABLES['category_has_product'] = (
+    TABLES["category_has_product"] = (
         "  CREATE TABLE `category_has_product` ("
         "  `category_id` int NOT NULL,"
         "  `product_id` bigint NOT NULL,"
@@ -79,7 +72,7 @@ class Config:
         ") ENGINE=InnoDB"
     )
 
-    TABLES['store_has_product'] = (
+    TABLES["store_has_product"] = (
         "  CREATE TABLE `store_has_product` ("
         "  `store_id` int NOT NULL,"
         "  `product_id` bigint NOT NULL,"
