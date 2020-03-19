@@ -37,7 +37,7 @@ class App:
             self.setup_database.create_tables()
             for category in Config.CATEGORIES:
                 result = self.api.get_data(category)
-                for product in self.clean_datas.get_product(result):
+                for product in self.clean_datas.get_product(result, category):
                     self.populate.insert_datas(product)
             end: float = time.time()
             print(f"Temps de traitement {end - start:.2f} sec.\n")

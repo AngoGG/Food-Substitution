@@ -36,8 +36,8 @@ class Display:
         """ """
         print("\nVoici la liste des Catégories de produit disponible:")
         n = 1
-        for category in Config.CATEGORIES:
-            print(f"{n} - {category}")
+        for category in self.database.get_categories():
+            print(f"{n} - {category[0]}")
             n += 1
         choix = input("Selectionnez une categorie à afficher: ")
         try:
@@ -72,7 +72,7 @@ class Display:
 
     def display_product_infos(self, product, category):
         product_stores = self.database.get_stores(str(product[0]))
-        product_categories = self.database.get_categories(str(product[0]))
+        product_categories = self.database.get_product_categories(str(product[0]))
         print(
             f"\nVous avez sélectionné {product[1]}, voici les informations sur ce produit:",
         )
@@ -98,7 +98,7 @@ class Display:
         """ """
         substitute = self.database.get_substitute(category)
         substitute_stores = self.database.get_stores(str(substitute[0]))
-        substitute_categories = self.database.get_categories(str(substitute[0]))
+        substitute_categories = self.database.get_product_categories(str(substitute[0]))
         print(
             f"\nPour le produit {product_name}, nous vous proposons "
             + "le produit suivant en substitution:\n",

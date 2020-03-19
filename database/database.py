@@ -45,6 +45,10 @@ class Database:
             return store_id
         cursor.close()
 
+    def get_categories(self) -> List:
+        request = "SELECT category_name FROM category"
+        return self.query(request)
+
     def get_product(self, category: str) -> Dict:
         """ Randomly get all products from the selected category and return the first 10 rows """
         request = """ SELECT p.id, p.product_name, p.url, p.nutriscore_grade, c.category_name
@@ -93,7 +97,7 @@ class Database:
             stores_list.append(store[0])
         return stores_list
 
-    def get_categories(self, product_id: str) -> List:
+    def get_product_categories(self, product_id: str) -> List:
         """ Retrieves the list of all categories to which the product belongs """
         product_categories_request = """SELECT c.category_name
             FROM category c

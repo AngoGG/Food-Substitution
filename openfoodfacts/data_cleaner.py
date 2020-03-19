@@ -17,7 +17,7 @@ class DataCleaner:
             "url",
         ]
 
-    def get_product(self, datas: Dict[str, Any]) -> Generator:
+    def get_product(self, datas: Dict[str, Any], category: str) -> Generator:
         """ Sorts the data to keep only what is needed in the database """
         for data in datas["products"]:
             if self._product_is_valid(data):
@@ -25,7 +25,7 @@ class DataCleaner:
                     "id": data["_id"],
                     "Aliment": data["product_name"],
                     "Magasins": data["stores_tags"],
-                    "Categories": data["categories"],
+                    "Categories": category,
                     "Nutriscore": data["nutriscore_grade"].upper(),
                     "Url": data["url"],
                 }
