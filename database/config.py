@@ -2,6 +2,7 @@
 
 
 class Config:
+    """ Class containing all the information needed to create database tables with python """
 
     TABLES = {}
 
@@ -18,7 +19,7 @@ class Config:
     TABLES["category"] = (
         "CREATE TABLE `category` ("
         "  `id` int NOT NULL AUTO_INCREMENT,"
-        "  `category_name` varchar(400) NOT NULL,"
+        "  `category_name` varchar(255) NOT NULL,"
         "  PRIMARY KEY (`id`)"
         ") ENGINE=InnoDB"
     )
@@ -33,8 +34,8 @@ class Config:
 
     TABLES["substituted_product"] = (
         "  CREATE TABLE `substituted_product` ("
-        "  `substitution_product_id` bigint NOT NULL,"
         "  `product_id` BIGINT NOT NULL,"
+        "  `substitution_product_id` bigint NOT NULL,"
         "  INDEX `fk_substituted_product_product_idx` (`product_id` ASC),"
         "  INDEX `fk_substituted_product_product1_idx` (`substitution_product_id` ASC),"
         "  CONSTRAINT `fk_substituted_product_product`"

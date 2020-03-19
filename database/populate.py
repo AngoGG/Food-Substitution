@@ -1,19 +1,21 @@
 #!/usr/bin/env python3
 
-import mysql.connector
+from typing import Dict, List, Generator
 
 
 class Populate:
+    """ Manages the integration of data retrieved from the API into the database """
+
     def __init__(self, database) -> None:
         self.database = database
         self.store_list = []
         self.category_list = []
 
     def insert_datas(self, product: Dict) -> None:
-        """ """
+        """ Main method that handles database integration by calling the other methods """
         product_name = product["Aliment"].replace('"', '""')
         if not self.database.query(
-            "SELECT * from product WHERE product_name = %s", (product_name,),
+            "SELECT * from product WHERE product_name = %s", (product_name,)
         ):
             self.database.insert(
                 "INSERT INTO product VALUES (%s, %s, %s, %s);",
@@ -26,6 +28,7 @@ class Populate:
                 self._populate_category_has_product(category_id, product["id"])
 
     def populate_stores(self, stores: List) -> Generator:
+        """ Manages the integration of stores not yet in the database. """
         for store in list(set(stores)):
             if store not in self.store_list:
                 self.store_list.append(store)
@@ -42,11 +45,14 @@ class Populate:
                 yield store_id[0][0]
 
     def _populate_store_has_product(self, store_id: str, product_id: str) -> None:
+        """ Manages the integration in the database of the relationship
+        between the product and the store in which it is sold. """
         self.database.insert(
             "INSERT INTO store_has_product VALUES (%s, %s);", (store_id, product_id),
         )
 
     def populate_categories(self, categories: List) -> Generator:
+        """ Manages the integration of categories not yet in the database. """
         categories.replace(", ", ",")
         for category in categories.split(","):
             new_category = category.lstrip()
@@ -67,6 +73,8 @@ class Populate:
                 yield category_id[0][0]
 
     def _populate_category_has_product(self, category_id: str, product_id: str) -> None:
+        """ Manages the integration in the database of the relationship 
+        between the product and the category in which it it belongs. """
         self.database.insert(
             "INSERT INTO category_has_product VALUES (%s, %s);",
             (category_id, product_id),

@@ -1,8 +1,7 @@
 #!/usr/bin/env python3
 
 from os import environ
-from pathlib import Path
-from typing import List, Dict, Any, BinaryIO, Generator
+from typing import List, Dict, Any
 import json
 import requests
 
@@ -32,6 +31,7 @@ class Api:
         return response.json()
 
     def get_data(self, category: str) -> Dict:
+        """ Gets data from the given category and returns it"""
         self.payloads["tag_0"] = category
         result = self.request()
         return result

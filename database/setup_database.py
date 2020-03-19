@@ -6,6 +6,8 @@ from .config import Config
 
 
 class SetupDatabase:
+    """ Manages the tables creation"""
+
     def __init__(self, database) -> None:
         self.database = database
 
@@ -32,7 +34,8 @@ class SetupDatabase:
         try:
             print("Deleting tables: ", end="", flush=True)
             cursor.execute(
-                "DROP TABLE category, category_has_product, product, store, store_has_product, substituted_product;"
+                """DROP TABLE category, category_has_product, product,
+                store, store_has_product, substituted_product;"""
             )
         except mysql.connector.Error as err:
             print(err.msg, flush=True)

@@ -1,7 +1,6 @@
-# #!/usr/bin/env python3
+#!/usr/bin/env python3
 
 from os import environ
-import os
 import time
 import click
 from config.config import Config
@@ -14,7 +13,10 @@ from ui.display import Display
 
 
 class App:
-    """ Main Class """
+    """ Manages the entire program process,
+    creates and fills tables if required,
+    launches the program menu.
+    """
 
     def __init__(self, build_database: bool) -> None:
         self.api: Api = Api()
@@ -38,7 +40,7 @@ class App:
                 for product in self.clean_datas.get_product(result):
                     self.populate.insert_datas(product)
             end: float = time.time()
-            print(f"Temps de traitement {end - start:.2f} sec.")
+            print(f"Temps de traitement {end - start:.2f} sec.\n")
         program_loop = True
         while program_loop:
             self.ui.display_menu()
@@ -47,7 +49,15 @@ class App:
 
 @click.command()
 @click.option("-b", "--build", is_flag=True, help="To create and fill tables")
-def main(build) -> None:
+def main(build=None) -> None:
+    """ This program interacts with the Open Food Facts API to retrieve the food,
+    in order to provide the user with the ability to choose a healthier alternative
+    in the same category for a given food.
+    There are 3 main functions:
+    - API data retrieval,
+    - data sorting and database integration,
+    - and the substitute choice interface
+    """
     app: App = App(build)
     app.run()
 

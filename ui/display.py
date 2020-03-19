@@ -1,7 +1,6 @@
 # #!/usr/bin/env python3
 
 from config.config import Config
-from database.database import Database
 
 
 class Display:
@@ -13,7 +12,8 @@ class Display:
     def display_menu(self):
         """ """
         print(
-            "Bonjour utilisateur, bienvenue dans notre programme de substitution alimentaire Pur Beurre!",
+            "Bonjour utilisateur, bienvenue dans notre programme "
+            + "de substitution alimentaire Pur Beurre!",
         )
         print(
             "Que voulez-vous faire?\n",
@@ -100,7 +100,8 @@ class Display:
         substitute_stores = self.database.get_stores(str(substitute[0]))
         substitute_categories = self.database.get_categories(str(substitute[0]))
         print(
-            f"\nPour le produit {product_name}, nous vous proposons le produit suivant en substitution:\n",
+            f"\nPour le produit {product_name}, nous vous proposons "
+            + "le produit suivant en substitution:\n",
         )
         print(
             f"Nom du produit : {substitute[1]} \n"
@@ -127,7 +128,8 @@ class Display:
         """ """
         favorites = self.database.get_favorites()
         print(
-            "Voici vos substitutions enregistrées dans vos favoris: Aliment[Nutriscore] => Substitut[Nutriscore]\n"
+            "Voici vos substitutions enregistrées dans vos favoris: "
+            + "Aliment[Nutriscore] => Substitut[Nutriscore]\n"
         )
         n = 1
         for favorite in favorites:
